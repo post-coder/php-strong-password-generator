@@ -5,10 +5,22 @@ include './functions.php';
 // preparo una variabile che conterrà il numero di caratteri (se indicato)
 $passwordLength = null;
 
+$containsNumbers = false;
+if(isset($_GET['contains-numbers']) && $_GET['contains-numbers']) {
+    $containsNumbers = true;
+}
+
+// il codice sopra lo posso riassumere con un ternario
+$containsLetters = isset($_GET['contains-letters']) && $_GET['contains-letters'] ? true : false;
+$containsSymbols = isset($_GET['contains-symbols']) && $_GET['contains-symbols'] ? true : false;
+$uniCharacters = isset($_GET['uni-character']) && $_GET['uni-character'] ? true : false;
+
 // controllo se è settato il parametro 
 if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
 
-    $generatedPassword = generatePassword($_GET['passwordCharacters']);
+
+
+    $generatedPassword = generatePassword($_GET['passwordCharacters'], $containsNumbers, $containsLetters, $containsSymbols, $uniCharacters);
 
     // apriamo la sessione
     session_start();
@@ -38,30 +50,64 @@ if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
 <body>
     
     <div class="container py-5">
+        <?php
+        if(isset($_GET['error'])) {
+
+            if($_GET['error'] == 'no-options') {
+                ?>
+                <div class="alert alert-warning" role="alert">
+                    Specifica almeno un tipo di carattere da includere.
+                </div>
+                <?php
+            }
+
+        }
+        ?>
+
         <h1>Strong Password Generator</h1>
 
         <form class="mb-5">
 
-            <div class="mb-3">
+            <div class="row row-cols-2 mb-4">
+                <div class="col">
 
-                <label for="passwordCharacters">Numero di caratteri</label>
-                <input 
-                    name="passwordCharacters" 
-                    id="passwordCharacters" 
-                    type="number" 
-                    placeholder="N°"
-                    min="6"
-                    max="20"
-                    value="<?php echo $passwordLength ?>"
-                >
+                    <label for="passwordCharacters">Numero di caratteri</label>
+                    <input 
+                        name="passwordCharacters" 
+                        id="passwordCharacters" 
+                        type="number" 
+                        placeholder="N°"
+                        min="6"
+                        max="10"
+                        value="<?php echo $passwordLength ?>"
+                    >
 
+                </div>
+
+                <div class="col">
+
+                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                    <input type="checkbox" class="btn-check" id="contains-numbers" name="contains-numbers" autocomplete="off" value="true" <?php echo $containsNumbers ? 'checked' : '' ?>>
+                    <label class="btn btn-outline-primary" for="contains-numbers">Comprendi numeri</label>
+
+                    <input type="checkbox" class="btn-check" id="contains-letters" name="contains-letters" autocomplete="off" value="true" <?php echo $containsLetters ? 'checked' : '' ?> >
+                    <label class="btn btn-outline-primary" for="contains-letters">Comprendi lettere</label>
+
+                    <input type="checkbox" class="btn-check" id="contains-symbols" name="contains-symbols" autocomplete="off" value="true" <?php echo $containsSymbols ? 'checked' : '' ?>>
+                    <label class="btn btn-outline-primary" for="contains-symbols">Comprendi simboli</label>
+
+                    <input type="checkbox" class="btn-check" id="uni-character" name="uni-character" autocomplete="off" value="true" <?php echo $uniCharacters ? 'checked' : '' ?>>
+                    <label class="btn btn-outline-primary" for="uni-character">Caretteri univoci</label>
+                </div>
+
+                </div>
             </div>
+            
 
             <button class="btn btn-primary" type="submit">Genera</button>
 
         </form>
 
-        
         
     </div>
 

@@ -3,7 +3,9 @@
 // accediamo alla sessione
 session_start();
 
+// se la password non è settata
 if (!isset($_SESSION['password'])) {
+    // redirect
     header("Location: index.php");
 }
 
