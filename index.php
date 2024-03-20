@@ -10,6 +10,15 @@ if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
 
     $generatedPassword = generatePassword($_GET['passwordCharacters']);
 
+    // apriamo la sessione
+    session_start();
+
+    // creare la variabile di sessione
+    $_SESSION['password'] = $generatedPassword;
+
+    // effettuiamo il redirect
+    header('Location: new-password.php');
+
     // sovrascrivo la variabile con il numero di caratteri
     $passwordLength = $_GET['passwordCharacters'];
 }
@@ -31,7 +40,7 @@ if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
     <div class="container py-5">
         <h1>Strong Password Generator</h1>
 
-        <form action="" class="mb-5">
+        <form class="mb-5">
 
             <div class="mb-3">
 
@@ -41,31 +50,18 @@ if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
                     id="passwordCharacters" 
                     type="number" 
                     placeholder="N°"
+                    min="6"
+                    max="20"
                     value="<?php echo $passwordLength ?>"
                 >
 
             </div>
 
-            <button type="submit">Genera</button>
+            <button class="btn btn-primary" type="submit">Genera</button>
 
         </form>
 
-        <?php 
         
-        if (isset($generatedPassword)) {
-            // la password è stata creata
-            ?>
-
-            <div id="generatedPassword" class="text-center bg-danger text-white p-4 border-2 border border-dark rounded-4">
-                <h2 class="mb-4">Password generata:</h2>
-
-                <pre><?php echo $generatedPassword ?></pre>
-            </div>
-
-            <?php
-        }
-
-        ?>
         
     </div>
 
