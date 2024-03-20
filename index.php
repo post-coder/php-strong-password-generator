@@ -1,31 +1,17 @@
 <?php 
 
-function generatePassword($characterNumber) {
-    $passwordCharacters = $_GET['passwordCharacters'];
+include './functions.php';
 
-    // array con tutti i simboli
-    $characters = range('A', 'z');
-
-    // generare una lista di N caratteri presi casualmente dall'array appena creato
-    
-    $generatedPassword = "";
-
-    for($i = 0; $i < $characterNumber; $i++) {
-
-        // sto facendo N iterazioni
-        $generatedPassword .= $characters[ rand(0, count($characters) - 1) ];
-        
-    }
-
-    return $generatedPassword;
-}
-
+// preparo una variabile che conterrà il numero di caratteri (se indicato)
+$passwordLength = null;
 
 // controllo se è settato il parametro 
 if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
 
-    echo generatePassword($_GET['passwordCharacters']);
+    $generatedPassword = generatePassword($_GET['passwordCharacters']);
 
+    // sovrascrivo la variabile con il numero di caratteri
+    $passwordLength = $_GET['passwordCharacters'];
 }
 
 ?>
@@ -45,18 +31,42 @@ if (isset($_GET['passwordCharacters']) && $_GET['passwordCharacters'] != '' ) {
     <div class="container py-5">
         <h1>Strong Password Generator</h1>
 
-        <form action="">
+        <form action="" class="mb-5">
 
             <div class="mb-3">
 
                 <label for="passwordCharacters">Numero di caratteri</label>
-                <input name="passwordCharacters" id="passwordCharacters" type="number" placeholder="N°">
+                <input 
+                    name="passwordCharacters" 
+                    id="passwordCharacters" 
+                    type="number" 
+                    placeholder="N°"
+                    value="<?php echo $passwordLength ?>"
+                >
 
             </div>
 
             <button type="submit">Genera</button>
 
         </form>
+
+        <?php 
+        
+        if (isset($generatedPassword)) {
+            // la password è stata creata
+            ?>
+
+            <div id="generatedPassword" class="text-center bg-danger text-white p-4 border-2 border border-dark rounded-4">
+                <h2 class="mb-4">Password generata:</h2>
+
+                <pre><?php echo $generatedPassword ?></pre>
+            </div>
+
+            <?php
+        }
+
+        ?>
+        
     </div>
 
     <!-- bootstrap -->
